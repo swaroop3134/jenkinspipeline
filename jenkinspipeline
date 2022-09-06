@@ -1,0 +1,68 @@
+pipeline {
+    agent any
+    environment {
+        name = 'swaroop'
+    }
+    parameters{
+        string(name: 'person', defaultValue: 'swaroop byathnal', description: "who are you?")
+        booleanParam(name: 'isMale', defaultValue: true, description: "")
+        choice(name: 'city', choices:['shimoga','davangere', 'banglore'], description: "")
+    }
+    stages {
+        stage('run a command') {
+            steps {
+                
+                sh '''
+                ls 
+                date
+                pwd
+            
+                '''
+            }
+        }
+        stage('environment variables') {
+             environment {
+              username = 'swaroop'
+            }
+            steps {
+                sh 'echo "${name}"'
+                sh 'echo "${username}"'
+            }
+        }
+        stage('parameters') {
+            steps {
+                echo 'deploy on test'
+                sh 'echo "${name}"' 
+                sh 'echo "${person}"'
+                
+            }
+        }
+        stage('continue ?') {
+            input {
+                message "should we continue?"
+                ok "yes we should"
+            }
+        steps {
+             echo 'deploy on prod'
+             
+            }
+       }    
+    
+       stage ('display on prod') {
+             steps {
+             echo 'deploy on prod'
+            }
+        }
+    }
+    post{
+        always {
+            echo 'i will always say helow'
+        }
+        failure {
+            echo 'failure'
+        }
+        success {
+            echo 'sucess'
+        }
+    }
+}
